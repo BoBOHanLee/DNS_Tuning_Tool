@@ -221,9 +221,13 @@ class StringGet_SSH:
         time.sleep(1.0)
 
         self.Alldata=self.Alldata.astype(np.float32)
-        for line in iter(stdout.readline, ""):
+        #for line in iter(stdout.readline, ""):
+        while True:
+            line = stdout.readline()
+            line = line.decode('utf-8', 'ignore')  #Decode process
             print(line, end="")
             data = line
+
             for i in range(0, len(data) + 1):
                 # wating
                 if (data[i:i + 6] == 'wating'):
@@ -234,6 +238,7 @@ class StringGet_SSH:
                     self.waitFlag = 0
 
                 # Explosure info
+                # [Improvement] To use regular expresstion -> (?P<var>[a-zA-Z\d_]+) ?= ?(?P<num>-?\d+\.?\d+)
                 if (data[i:i + 10] == 'uiAperture'):
                     self.uiAperture = int(data[i + 12:i + 18])
                     self.Alldata[0] = self.uiAperture
@@ -326,7 +331,7 @@ class MyMainWindow(QMainWindow, Ui_MainWindow):
         self.ShowBlowser_flag = 0
 
 
-        # IR IP
+        # IR IP [Improvement] To use dictionary type
         self.Aperatue_0IR = 0.0
         self.ExpTime_0IR = 0.0
         self.Gain_0IR = 0.0
